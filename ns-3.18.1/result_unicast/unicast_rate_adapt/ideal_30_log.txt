@@ -1,0 +1,6 @@
+Waf: Entering directory `/.automount/nfs/2014/jychoi/ns-allinone-3.18.2/ns-3.18.1/build'
+[1514/1644] cxx: scratch/one-hop.cc -> build/scratch/one-hop.cc.2.o
+[1599/1644] cxxprogram: build/scratch/one-hop.cc.2.o -> build/scratch/one-hop
+Waf: Leaving directory `/.automount/nfs/2014/jychoi/ns-allinone-3.18.2/ns-3.18.1/build'
+'build' finished successfully (5.041s)
+ns3::IdealWifiManager >> Number of STAs= 4 Aggregated Throughput: 6.01909 Mbps

@@ -1,0 +1,3 @@
+multicastrateadapt_seed78_type1_period100000_doppler0.1_bound10
+Throughput 26.2224 Mb/s
+PER 0.0639671

@@ -1,0 +1,4 @@
+Waf: Entering directory `/.automount/nfs/2014/jychoi/ns-allinone-3.18.2/ns-3.18.1/build'
+Waf: Leaving directory `/.automount/nfs/2014/jychoi/ns-allinone-3.18.2/ns-3.18.1/build'
+'build' finished successfully (1.077s)
+ns3::SbraWifiManager >> Number of STAs= 4 Aggregated Throughput: 10.3744 Mbps
