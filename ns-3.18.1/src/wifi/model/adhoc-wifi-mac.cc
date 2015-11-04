@@ -180,14 +180,14 @@ AdhocWifiMac::Receive (Ptr<Packet> packet, const WifiMacHeader *hdr)
 			NS_LOG_DEBUG ("Received A-MSDU from" << from);
 			DeaggregateAmsduAndForward (packet, hdr);
 		}
-		else if (from.IsGroup ())
+		else if (to.IsGroup ())
 		{
 			if (m_initialize == false)
 			{
+  			NS_LOG_UNCOND ("-------------initialize----------------");
   			m_srcAddress = hdr->GetAddr2 (); // jychoi source address
 				m_initialize = true; 
 				SendFeedback ();
-
 			}
 		}
 		else
@@ -198,7 +198,17 @@ AdhocWifiMac::Receive (Ptr<Packet> packet, const WifiMacHeader *hdr)
 	}
 	else if (hdr->IsFeedback ())
 	{
+		FeedbackHeader fbhdr;
+		packet->RemoveHeader (fbhdr);
+		m_rxInfoSet.Rssi = fbhdr.GetRssi();
+		m_rxInfoSet.Snr = fbhdr.GetSnr();
+		m_rxInfoSet.LossPacket = fbhdr.GetLossPacket();
+		m_rxInfoSet.TotalPacket = fbhdr.GetTotalPacket();
 		
+	
+		NS_LOG_UNCOND ("[rx feedback packet]" << " RSSI: " << m_rxInfoSet.Rssi << " Snr: " << m_rxInfoSet.Snr <<
+			" LossPacket: " << m_rxInfoSet.LossPacket << " TotalPacket: " << m_rxInfoSet.TotalPacket);
+		return;
 	}
 
   // Invoke the receive handler of our parent class to deal with any
@@ -227,10 +237,12 @@ AdhocWifiMac::SendFeedback ()
   FeedbackHeader FeedbackHdr; // Set RSSI, SNR, txPacket, TotalPacket
   FeedbackHdr.SetRssi (m_rxInfoGet.Rssi);
   FeedbackHdr.SetSnr (m_rxInfoGet.Snr);
-  FeedbackHdr.SetRxPacket (m_rxInfoGet.LossPacket);
+  FeedbackHdr.SetLossPacket (m_rxInfoGet.LossPacket);
   FeedbackHdr.SetTotalPacket (m_rxInfoGet.TotalPacket);
 	packet->AddHeader (FeedbackHdr);
 
+	NS_LOG_UNCOND ("[tx feedback packet]" << " RSSI: " << m_rxInfoGet.Rssi << " Snr: " << m_rxInfoGet.Snr <<
+			" LossPacket: " << m_rxInfoGet.LossPacket << " TotalPacket: " << m_rxInfoGet.TotalPacket);
   m_dca->Queue (packet, hdr);
   Simulator::Schedule (MilliSeconds(m_feedbackInterval), &AdhocWifiMac::SendFeedback, this);
 }

@@ -27,7 +27,7 @@ FeedbackHeader::GetInstanceTypeId (void) const
 void 
 FeedbackHeader::Print(std::ostream &os) const
 {
-	os << "RSSI = " << m_rxRssi << "\n";
+	os << "RSSI = " << m_rssi << "\n";
 }
 
 uint32_t
@@ -38,37 +38,36 @@ FeedbackHeader::GetSerializedSize (void) const
 void
 FeedbackHeader::Serialize (Buffer::Iterator start) const
 {
-  start.WriteHtonU32 (m_rxRssi);
-  start.WriteHtonU32 (m_rxSnr);
-  start.WriteHtonU32 (m_rxPacket);
+  start.WriteHtonU32 (m_rssi);
+  start.WriteHtonU32 (m_snr);
+  start.WriteHtonU32 (m_lossPacket);
   start.WriteHtonU32 (m_totalPacket);
 }
 uint32_t
 FeedbackHeader::Deserialize (Buffer::Iterator start)
 {
 	Buffer::Iterator i = start;
+	m_rssi = i.ReadNtohU32 (); 
+	m_snr = i.ReadNtohU32 (); 
+	m_lossPacket = i.ReadNtohU32 (); 
 	m_totalPacket = i.ReadNtohU32 (); 
-	m_rxPacket = i.ReadNtohU32 (); 
-	m_rxRssi = i.ReadNtohU32 (); 
-	m_rxSnr = i.ReadNtohU32 (); 
   return i.GetDistanceFrom (start);
 }
 // jychoi
-// Set function
 void
-FeedbackHeader::SetRssi (uint32_t rxRssi)
+FeedbackHeader::SetRssi (uint32_t rssi)
 {
-	m_rxRssi = rxRssi;
+	m_rssi = rssi;
 }
 void
-FeedbackHeader::SetSnr (uint32_t rxSnr)
+FeedbackHeader::SetSnr (uint32_t snr)
 {
-	m_rxSnr = rxSnr;
+	m_snr = snr;
 }
 void
-FeedbackHeader::SetRxPacket (uint32_t rxPacket)
+FeedbackHeader::SetLossPacket (uint32_t lossPacket)
 {
-	m_rxPacket = rxPacket;
+	m_lossPacket = lossPacket;
 }
 void
 FeedbackHeader::SetTotalPacket (uint32_t totalPacket)
@@ -76,21 +75,20 @@ FeedbackHeader::SetTotalPacket (uint32_t totalPacket)
 	m_totalPacket = totalPacket;
 }
 // jychoi
-// Get function
 uint32_t
 FeedbackHeader::GetRssi (void)
 {
-	return m_rxRssi;
+	return m_rssi;
 }
 uint32_t
 FeedbackHeader::GetSnr (void)
 {
-	return m_rxSnr;
+	return m_snr;
 }
 uint32_t
-FeedbackHeader::GetRxPacket (void)
+FeedbackHeader::GetLossPacket (void)
 {
-	return m_rxPacket;
+	return m_lossPacket;
 }
 uint32_t
 FeedbackHeader::GetTotalPacket (void)

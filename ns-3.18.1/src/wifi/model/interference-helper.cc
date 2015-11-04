@@ -239,7 +239,6 @@ InterferenceHelper::CalculateSnr (double signal, double noiseInterference, WifiM
 }
 
 //gjlee
-
 double
 InterferenceHelper::CalculateRssi (double signal, double noiseInterference, WifiMode mode) const
 {

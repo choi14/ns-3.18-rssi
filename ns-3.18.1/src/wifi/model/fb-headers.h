@@ -25,20 +25,20 @@ public:
   virtual void Serialize (Buffer::Iterator start) const;
   virtual uint32_t Deserialize (Buffer::Iterator start);
 
-	void SetRssi (uint32_t rxRssi);
-	void SetSnr (uint32_t rxSnr);
-	void SetRxPacket (uint32_t rxPacket);
+	void SetRssi (uint32_t rssi);
+	void SetSnr (uint32_t snr);
+	void SetLossPacket (uint32_t lossPacket);
 	void SetTotalPacket (uint32_t totalPacket);
 
 	uint32_t GetRssi (void);
 	uint32_t GetSnr (void);
-	uint32_t GetRxPacket (void);
+	uint32_t GetLossPacket (void);
 	uint32_t GetTotalPacket (void);
 
 private:
-	uint32_t m_rxRssi;
-	uint32_t m_rxSnr;
-	uint32_t m_rxPacket;
+	uint32_t m_rssi;
+	uint32_t m_snr;
+	uint32_t m_lossPacket;
 	uint32_t m_totalPacket;
 
 };

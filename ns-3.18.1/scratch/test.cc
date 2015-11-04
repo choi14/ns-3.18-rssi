@@ -52,7 +52,7 @@ main (int argc, char *argv[])
 	uint32_t seed = 1; // 1:1:100 
 	uint32_t type = 0; // 0 or 1 0-> per over 0.001 1-> maximun throughput 
 	uint64_t period = 100; // Microseconds
-	double dopplerVelocity = 0.01; // 0.5:0.5:2
+	double dopplerVelocity = 0.5; // 0.5:0.5:2
 	double bound = 10.0; //10.0:10.0:100.0
 	double perThreshold = 0.001;
 	double endTime = 5;
@@ -88,9 +88,9 @@ main (int argc, char *argv[])
 	wifiChannel.SetPropagationDelay ("ns3::ConstantSpeedPropagationDelayModel"); 
 	wifiChannel.AddPropagationLoss ("ns3::LogDistancePropagationLossModel", "Exponent", DoubleValue(3.5));
 
-	//double dopplerFrq = dopplerVelocity*50/3; 
-	//wifiChannel.AddPropagationLoss("ns3::JakesPropagationLossModel");
-	//Config::SetDefault ("ns3::JakesProcess::DopplerFrequencyHz", DoubleValue (dopplerFrq));
+	double dopplerFrq = dopplerVelocity*50/3; 
+	wifiChannel.AddPropagationLoss("ns3::JakesPropagationLossModel");
+	Config::SetDefault ("ns3::JakesProcess::DopplerFrequencyHz", DoubleValue (dopplerFrq));
 	//SetAttribute
 	Config::SetDefault ("ns3::SbraWifiManager::Type", UintegerValue (type));
 	Config::SetDefault ("ns3::SbraWifiManager::PerThreshold", DoubleValue (perThreshold));

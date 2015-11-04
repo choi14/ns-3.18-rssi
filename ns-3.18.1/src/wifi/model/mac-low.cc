@@ -301,8 +301,8 @@ MacLow::MacLow ()
   m_lastNavDuration = Seconds (0);
   m_lastNavStart = Seconds (0);
   m_promisc = false;
-	m_rxInfo.Rssi=0.0;
-	m_rxInfo.Snr=0.0;;
+	m_rxInfo.Rssi=0;
+	m_rxInfo.Snr=0;;
 	m_rxInfo.LossPacket=0;
 	m_rxInfo.TotalPacket=0;
 }
@@ -908,7 +908,7 @@ MacLow::ReceiveOk (Ptr<Packet> packet, double rxSnr, WifiMode txMode, WifiPreamb
 					NS_LOG_DEBUG ("rx group from=" << hdr.GetAddr2 ());
 					// jychoi IsGroup
 					// RSSI, SNR, # of RxPacket, # of TotalPacket
-					m_rxInfo.Rssi = rxSnr;
+					m_rxInfo.Rssi = (uint32_t)10*std::log10(rxSnr);
 					m_rxInfo.TotalPacket++;
 					m_stationManager->SetGroupRxSnr (rxSnr);
 					goto rxPacket;

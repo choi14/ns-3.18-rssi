@@ -468,6 +468,9 @@ WifiMacHeader::GetType (void) const
         case 5:
           return WIFI_MAC_MGT_PROBE_RESPONSE;
           break;
+				case 6:
+					return WIFI_MAC_MGT_FEEDBACK;
+					break;
         case 8:
           return WIFI_MAC_MGT_BEACON;
           break;
