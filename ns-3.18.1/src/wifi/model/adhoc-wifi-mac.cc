@@ -37,6 +37,8 @@
 #include "amsdu-subframe-header.h"
 #include "mgt-headers.h"
 #include "fb-headers.h"
+#include "sbra-wifi-manager.h"
+
 
 NS_LOG_COMPONENT_DEFINE ("AdhocWifiMac");
 
@@ -210,6 +212,9 @@ AdhocWifiMac::Receive (Ptr<Packet> packet, const WifiMacHeader *hdr)
 		m_rxInfoSet.LossPacket = fbhdr.GetLossPacket();
 		m_rxInfoSet.TotalPacket = fbhdr.GetTotalPacket();
 		
+		Ptr<SbraWifiManager> sbra = DynamicCast<SbraWifiManager> (GetWifiRemoteStationManager());
+		sbra->UpdateInfo(from, m_rxInfoSet);
+
 		NS_LOG_UNCOND ("[rx feedback packet]" << " RSSI: " << m_rxInfoSet.Rssi << " Snr: " << m_rxInfoSet.Snr <<
 			" LossPacket: " << m_rxInfoSet.LossPacket << " TotalPacket: " << m_rxInfoSet.TotalPacket);
 		return;
