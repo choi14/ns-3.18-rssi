@@ -1301,7 +1301,6 @@ WifiRemoteStationManager::GetNonUnicastMode (void)
 {
 	return DoGroupRateAdaptation ();
 }
-
 // jychoi
 WifiMode
 WifiRemoteStationManager::DoGroupRateAdaptation (void)
@@ -1314,13 +1313,6 @@ WifiRemoteStationManager::DoGroupRateAdaptation (void)
     {
       return m_nonUnicastMode;
     }
-}
-
-// jychoi
-void
-WifiRemoteStationManager::GroupRateAdaptation (void)
-{
-	DoGroupRateAdaptation ();
 }
 
 bool

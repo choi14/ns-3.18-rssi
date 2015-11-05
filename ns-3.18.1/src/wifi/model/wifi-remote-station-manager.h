@@ -237,7 +237,6 @@ public:
 	//jychoi
 	void SetGroupRxSnr (double rxSnr);
 	double GetGroupRxSnr (void) const;
-	virtual void GroupRateAdaptation (void);
 
   /**
    * \param address remote address

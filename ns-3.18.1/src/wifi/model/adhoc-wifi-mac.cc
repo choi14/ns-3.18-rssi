@@ -236,7 +236,6 @@ AdhocWifiMac::SendFeedback ()
   hdr.SetDsNotTo ();
 
 	m_rxInfoGet = m_low->GetRxInfo ();
-
   Ptr<Packet> packet = Create<Packet> ();
   FeedbackHeader FeedbackHdr; // Set RSSI, SNR, txPacket, TotalPacket
   FeedbackHdr.SetRssi (m_rxInfoGet.Rssi);
@@ -245,8 +244,8 @@ AdhocWifiMac::SendFeedback ()
   FeedbackHdr.SetTotalPacket (m_rxInfoGet.TotalPacket);
 	packet->AddHeader (FeedbackHdr);
 
-	/*NS_LOG_UNCOND ("[tx feedback packet]" << " RSSI: " << m_rxInfoGet.Rssi << " Snr: " << m_rxInfoGet.Snr <<
-			" LossPacket: " << m_rxInfoGet.LossPacket << " TotalPacket: " << m_rxInfoGet.TotalPacket);*/
+	NS_LOG_INFO ("[tx feedback packet]" << " RSSI: " << m_rxInfoGet.Rssi << " Snr: " << m_rxInfoGet.Snr <<
+			" LossPacket: " << m_rxInfoGet.LossPacket << " TotalPacket: " << m_rxInfoGet.TotalPacket);
   m_dca->Queue (packet, hdr);
   Simulator::Schedule (MilliSeconds(m_feedbackInterval), &AdhocWifiMac::SendFeedback, this);
 }

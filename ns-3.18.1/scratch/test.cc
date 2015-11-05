@@ -33,13 +33,6 @@ RxData(Ptr <const Packet> pkt, const Address &a)
 	if(pkt->GetSize () >= 1000)
 		data += pkt->GetSize (); 
 }
-static void
-SetGroupTxMode(Ptr<RegularWifiMac> txRegMac, uint64_t period)
-{
-	NS_LOG_INFO("Get Group mode");
-	txRegMac->GetWifiRemoteStationManager()->GroupRateAdaptation();
-	Simulator::Schedule(MicroSeconds(period), &SetGroupTxMode, txRegMac, period);
-}
 
 int
 main (int argc, char *argv[])
@@ -113,17 +106,6 @@ main (int argc, char *argv[])
 	rxMobility.SetPositionAllocator (positionAlloc);
   rxMobility.Install (rxNodes.Get (0));
 	
-	/*
-  rxMobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel", 
-															 "Bounds", RectangleValue(Rectangle(-bound,bound,-bound,bound)));
-
-	rxMobility.SetPositionAllocator ("ns3::RandomDiscPositionAllocator", 
-																	 "X", StringValue ("0.0"),
-																	 "Y", StringValue ("0.0"),
-																	 "Rho", StringValue ("ns3::UniformRandomVariable[Min=0|Max=30]"));
-  rxMobility.Install (rxNodes);
-	*/
-
 	InternetStackHelper stack;
 	stack.Install (txNodes);
 	stack.Install (rxNodes);
@@ -168,9 +150,7 @@ main (int argc, char *argv[])
 	rxDevice.Get(0)->GetObject<WifiNetDevice>()->GetPhy()->TraceConnectWithoutContext("PhyRxDrop", MakeCallback(&RxDrop));
 	rxDevice.Get(0)->GetObject<WifiNetDevice>()->GetPhy()->TraceConnectWithoutContext("PhyRxEnd", MakeCallback(&RxNum));
 
-	Simulator::Schedule (MilliSeconds (period), &SetGroupTxMode, txRegMac, period);
 	wifiPhy.EnablePcapAll ("multicast-test");
-	
 
 	NS_LOG_UNCOND ("Run Simulation");
 	Simulator::Stop (Seconds (endTime));

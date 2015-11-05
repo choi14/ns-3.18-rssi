@@ -25,14 +25,15 @@ public:
   void UpdateInfo(Mac48Address addr, struct rxInfo info);
 	
   virtual void SetupPhy (Ptr<WifiPhy> phy);
-	virtual void GroupRateAdaptation (void);
 
 private:
-  // overriden from base class
-  virtual WifiRemoteStation* DoCreateStation (void) const;
  	// jychoi
 	virtual WifiMode DoGroupRateAdaptation (void);
-
+	void AddOfdmRate (void); 
+	WifiMode GroupRateAdaptation (void);
+ 
+	// overriden from base class
+  virtual WifiRemoteStation* DoCreateStation (void) const;
 	virtual void DoReportRxOk (WifiRemoteStation *station,
                              double rxSnr, WifiMode txMode);
   virtual void DoReportRtsFailed (WifiRemoteStation *station);
@@ -59,20 +60,17 @@ private:
 	Ptr<WifiPhy> m_phy;
 	
 	//jychoi
-	//void SnrRateAdaptation ();
-
 	typedef std::vector<Mac48Address> macAddress;
 	typedef std::vector<double> GroupRxSnr;
-
 	std::vector<StaInfo> m_infos;
-
 	WifiMode m_GroupTxMode;
 	macAddress m_macAddress;
 	GroupRxSnr m_GroupRxSnr;
-	double m_minSnr;
-	bool m_initial;
 	uint32_t m_type;
+	double m_minSnr;
 	double m_per;
+	bool m_initial;
+	bool m_addBasicMode;
 };
 
 } // namespace ns3

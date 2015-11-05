@@ -55,6 +55,7 @@ SbraWifiManager::GetTypeId (void)
 
 SbraWifiManager::SbraWifiManager ()
 {
+	m_addBasicMode = false;
 	m_initial = true;
 }
 SbraWifiManager::~SbraWifiManager ()
@@ -138,10 +139,8 @@ void
 SbraWifiManager::DoReportFinalDataFailed (WifiRemoteStation *station)
 {
 }
-
-//jychoi
 void
-SbraWifiManager::GroupRateAdaptation ()
+SbraWifiManager::AddOfdmRate (void)
 {
 	AddBasicMode(WifiMode("OfdmRate6Mbps"));
 	AddBasicMode(WifiMode("OfdmRate9Mbps"));
@@ -151,46 +150,39 @@ SbraWifiManager::GroupRateAdaptation ()
 	AddBasicMode(WifiMode("OfdmRate36Mbps"));
 	AddBasicMode(WifiMode("OfdmRate48Mbps"));
 	AddBasicMode(WifiMode("OfdmRate54Mbps"));
+	m_addBasicMode = true;
+}
+WifiMode
+SbraWifiManager::DoGroupRateAdaptation ()
+{
 
-	m_macAddress.clear();
-	m_GroupRxSnr.clear();
-	
-	uint32_t nNode = NodeList::GetNNodes ();
-	for (uint32_t i = 1; i < nNode; i++)
+	if (m_initial == true)
 	{
-		Ptr<Node> node = NodeList::GetNode(i);
-		uint32_t nDevices = node->GetNDevices ();
-		for (uint32_t j = 0; j < nDevices; j++)
-		{
-			Ptr<WifiNetDevice> device = node->GetDevice(j)->GetObject<WifiNetDevice> ();
-			if (device != 0)
-			{
-				Ptr<WifiMac> mac = device->GetMac ();
-				Ptr<RegularWifiMac> rmac = DynamicCast<RegularWifiMac> (mac);
-				double rxSnr = rmac->GetWifiRemoteStationManager()->GetGroupRxSnr();
-				//NS_LOG_UNCOND("Snr: " << rxSnr);
-				m_macAddress.push_back (mac->GetAddress ());
-				m_GroupRxSnr.push_back (rxSnr);
-			}
-		}
+		NS_LOG_INFO("Selected Rate Initial Rate: 6 Mb/s");
+		return GetBasicMode (0);
 	}
-
-	uint32_t vsize = m_GroupRxSnr.size();
-	//NS_LOG_UNCOND("Vsize: " << vsize);
+	else
+		return GroupRateAdaptation();
+}
+WifiMode
+SbraWifiManager::GroupRateAdaptation ()
+{
+	if (m_addBasicMode == false)
+		AddOfdmRate ();
 	
+	uint32_t vsize = m_infos.size();
 	if(vsize == 0)
 	{
-		//NS_LOG_UNCOND("vsize = 0");
 		m_GroupTxMode = GetBasicMode (0);
 	}
 	else
 	{
-		m_minSnr = m_GroupRxSnr[0];
+		m_minSnr = m_infos[0].info.Rssi;
 		for (uint32_t m = 0; m < vsize; m++)
 		{
-			if(m_minSnr > m_GroupRxSnr[m])
+			if(m_minSnr > m_infos[m].info.Rssi)
 			{
-				m_minSnr = m_GroupRxSnr[m];
+				m_minSnr = m_infos[m].info.Rssi;
 			}
 		}
 
@@ -231,22 +223,22 @@ SbraWifiManager::GroupRateAdaptation ()
 					double nSymbols = ((databits+64)*8+22)/coderate/ofdmbits;
 					uint32_t nbits = ((uint32_t)nSymbols +1)*ofdmbits;
 					
-					//NS_LOG_UNCOND("Mode: "<<mode.GetDataRate ()*0.000001<<" Coderate: "<<coderate<<" nSymbols: " <<nSymbols<<" nbits: "<<nbits);
+					NS_LOG_INFO("Mode: "<<mode.GetDataRate ()*0.000001<<" Coderate: "<<coderate<<" nSymbols: " <<nSymbols<<" nbits: "<<nbits);
 					Pdr = m_phy->CalculatePdr (mode, m_minSnr, nbits);
-					double t_Per = 1-Pdr;
-					if(t_Per < m_per)
+					double tempPer = 1-Pdr;
+					if(tempPer < m_per)
 					{
 						m_GroupTxMode = mode;
-						Per=t_Per;
+						Per=tempPer;
 					}
-				  NS_LOG_INFO("t_Per: "<<t_Per<<" mode: "<<mode.GetDataRate ()*0.000001<<" Mb/s");
 				}
-				if (Per >1)
-					NS_LOG_UNCOND("Never happen");
+				if (Per > 1)
+					NS_ASSERT("Never happen");
 				else if (Per == 1)
 					m_GroupTxMode = GetBasicMode (0);
 				
-				NS_LOG_INFO("PER: "<<Per<<" GroupTxDataRate: "<<m_GroupTxMode.GetDataRate ()*0.000001<<" Mb/s");
+				NS_LOG_INFO("PER: "<< Per << " GroupTxDataRate: " 
+						<< m_GroupTxMode.GetDataRate ()*0.000001<<" Mb/s");
 			}
 
 			// Throughput-SNR Rate Adaptation
@@ -258,7 +250,7 @@ SbraWifiManager::GroupRateAdaptation ()
 				for (uint32_t k = 0; k < NBasicMode; k++)
 				{
 					WifiMode mode = GetBasicMode(k);
-					//NS_LOG_UNCOND("mode = "<<GetBasicMode(k).GetDataRate() );
+					NS_LOG_INFO("mode = "<<GetBasicMode(k).GetDataRate() );
 					Pdr = m_phy->CalculatePdr (mode, m_minSnr, 1086*8);
 					Rate = mode.GetDataRate();
 					PdrRate = Pdr*Rate*0.000001;
@@ -271,28 +263,17 @@ SbraWifiManager::GroupRateAdaptation ()
 				}
 				if (maxPdrRate == 0)
 					m_GroupTxMode = GetBasicMode (0);
-				NS_LOG_UNCOND("SNR: "<<m_minSnr<<" GroupTxDataRate: "<<m_GroupTxMode.GetDataRate ()*0.000001<<" Mb/s");
+				
+				NS_LOG_INFO("SNR: "<< m_minSnr <<" GroupTxDataRate: "<< 
+						m_GroupTxMode.GetDataRate ()*0.000001<<" Mb/s");
 			}
 		}
 		else
 			m_GroupTxMode = GetBasicMode (0);
 	}
 	m_initial = false;
+	return m_GroupTxMode;
 }
-
-//jychoi
-WifiMode
-SbraWifiManager::DoGroupRateAdaptation ()
-{
-	if (m_initial == true)
-	{
-		NS_LOG_UNCOND("Selected Rate Initial Rate: 6 Mb/s");
-		return GetBasicMode (0);
-	}
-	else
-		return m_GroupTxMode;
-}
-
 WifiTxVector
 SbraWifiManager::DoGetDataTxVector (WifiRemoteStation *st, uint32_t size)
 {
