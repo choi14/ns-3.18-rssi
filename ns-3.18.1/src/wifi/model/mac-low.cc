@@ -907,7 +907,6 @@ MacLow::ReceiveOk (Ptr<Packet> packet, double rxSnr, WifiMode txMode, WifiPreamb
         {
 					NS_LOG_DEBUG ("rx group from=" << hdr.GetAddr2 ());
 					// jychoi IsGroup
-					// RSSI, SNR, # of RxPacket, # of TotalPacket
 					m_rxInfo.Rssi = (uint32_t)10*std::log10(rxSnr);
 					m_rxInfo.TotalPacket++;
 					m_stationManager->SetGroupRxSnr (rxSnr);

@@ -69,7 +69,6 @@ private:
 	uint32_t m_type;
 	double m_minSnr;
 	double m_per;
-	bool m_initial;
 	bool m_addBasicMode;
 };
 

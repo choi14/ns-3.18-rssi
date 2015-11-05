@@ -187,13 +187,11 @@ AdhocWifiMac::Receive (Ptr<Packet> packet, const WifiMacHeader *hdr)
 				if (m_initialize == false)
 				{
 						NS_LOG_UNCOND ("-------------initialize----------------");
-						m_srcAddress = hdr->GetAddr2 (); // jychoi source address
+						m_srcAddress = from; // jychoi source address
 						m_initialize = true; 
 						SendFeedback ();
 				}
-
 			ForwardUp (packet, from, to);
-			
 		}
 		else
 		{
@@ -203,8 +201,8 @@ AdhocWifiMac::Receive (Ptr<Packet> packet, const WifiMacHeader *hdr)
 	}
 	else if (hdr->IsFeedback ())
 	{
-		//ForwardUp (packet, from, to);
-		
+    //Ptr<Packet> originPacket = Create<Packet> ();
+		//originPacket = packet;
 		FeedbackHeader fbhdr;
 		packet->RemoveHeader (fbhdr);
 		m_rxInfoSet.Rssi = fbhdr.GetRssi();
@@ -215,12 +213,13 @@ AdhocWifiMac::Receive (Ptr<Packet> packet, const WifiMacHeader *hdr)
 		Ptr<SbraWifiManager> sbra = DynamicCast<SbraWifiManager> (GetWifiRemoteStationManager());
 		sbra->UpdateInfo(from, m_rxInfoSet);
 
-		NS_LOG_UNCOND ("[rx feedback packet]" << " RSSI: " << m_rxInfoSet.Rssi << " Snr: " << m_rxInfoSet.Snr <<
-			" LossPacket: " << m_rxInfoSet.LossPacket << " TotalPacket: " << m_rxInfoSet.TotalPacket);
-		return;
+		NS_LOG_UNCOND ("[rx feedback packet]" << " RSSI: " << m_rxInfoSet.Rssi << " Snr: " << 
+				m_rxInfoSet.Snr << " LossPacket: " << m_rxInfoSet.LossPacket << " TotalPacket: " << m_rxInfoSet.TotalPacket);
+	 	return;
+		//ForwardUp (originPacket, from, to);
 	}
-
-  // Invoke the receive handler of our parent class to deal with any
+  
+	// Invoke the receive handler of our parent class to deal with any
   // other frames. Specifically, this will handle Block Ack-related
   // Management Action frames.
   RegularWifiMac::Receive (packet, hdr);

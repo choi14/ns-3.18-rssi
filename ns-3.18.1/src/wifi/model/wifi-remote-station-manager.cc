@@ -687,7 +687,6 @@ WifiRemoteStationManager::ReportRxOk (Mac48Address address, const WifiMacHeader 
 void
 WifiRemoteStationManager::SetGroupRxSnr (double rxSnr)
 {
-	//NS_LOG_UNCOND("rxSnr = " << rxSnr);
 	m_GroupRxSnr = rxSnr;
 }
 
@@ -1301,6 +1300,7 @@ WifiRemoteStationManager::GetNonUnicastMode (void)
 {
 	return DoGroupRateAdaptation ();
 }
+
 // jychoi
 WifiMode
 WifiRemoteStationManager::DoGroupRateAdaptation (void)

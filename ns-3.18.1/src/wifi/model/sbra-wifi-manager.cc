@@ -56,7 +56,6 @@ SbraWifiManager::GetTypeId (void)
 SbraWifiManager::SbraWifiManager ()
 {
 	m_addBasicMode = false;
-	m_initial = true;
 }
 SbraWifiManager::~SbraWifiManager ()
 {
@@ -155,13 +154,6 @@ SbraWifiManager::AddOfdmRate (void)
 WifiMode
 SbraWifiManager::DoGroupRateAdaptation ()
 {
-
-	if (m_initial == true)
-	{
-		NS_LOG_INFO("Selected Rate Initial Rate: 6 Mb/s");
-		return GetBasicMode (0);
-	}
-	else
 		return GroupRateAdaptation();
 }
 WifiMode
@@ -223,7 +215,7 @@ SbraWifiManager::GroupRateAdaptation ()
 					double nSymbols = ((databits+64)*8+22)/coderate/ofdmbits;
 					uint32_t nbits = ((uint32_t)nSymbols +1)*ofdmbits;
 					
-					NS_LOG_INFO("Mode: "<<mode.GetDataRate ()*0.000001<<" Coderate: "<<coderate<<" nSymbols: " <<nSymbols<<" nbits: "<<nbits);
+					//NS_LOG_UNCOND("Mode: "<<mode.GetDataRate ()*0.000001<<" Coderate: "<<coderate<<" nSymbols: " <<nSymbols<<" nbits: "<<nbits);
 					Pdr = m_phy->CalculatePdr (mode, m_minSnr, nbits);
 					double tempPer = 1-Pdr;
 					if(tempPer < m_per)
@@ -271,7 +263,6 @@ SbraWifiManager::GroupRateAdaptation ()
 		else
 			m_GroupTxMode = GetBasicMode (0);
 	}
-	m_initial = false;
 	return m_GroupTxMode;
 }
 WifiTxVector
@@ -329,17 +320,17 @@ SbraWifiManager::DoGetRtsTxVector (WifiRemoteStation *st)
 }
 
 void
-SbraWifiManager::UpdateInfo (Mac48Address addr, struct rxInfo info){
+SbraWifiManager::UpdateInfo (Mac48Address addr, struct rxInfo info)
+{
 	bool exist = false;
-
-	for (uint32_t i = 0; i < m_infos.size(); i++){
+	for (uint32_t i = 0; i < m_infos.size(); i++)
+	{
 		if (m_infos[i].addr == addr){
 			exist = true;
 			m_infos[i].info = info;
 			break;
 		}
 	}
-
 	if (exist == false){
 			StaInfo stainfo;
 			stainfo.addr = addr;
@@ -351,15 +342,10 @@ SbraWifiManager::UpdateInfo (Mac48Address addr, struct rxInfo info){
 */
 		m_infos.push_back(stainfo);
 	}
-	
-	
 	for (uint32_t i = 0; i < m_infos.size(); i++){
 		NS_LOG_ERROR("Addr " << m_infos[i].addr); 
 	}
 }
-
-
-
 
 bool
 SbraWifiManager::IsLowLatency (void) const
