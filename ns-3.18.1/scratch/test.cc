@@ -26,17 +26,14 @@ RxDrop(Ptr<const Packet> pkt )
 {
 	if(pkt->GetSize () >= 1000)
 		rxdrop++;
-	//NS_LOG_UNCOND("RxDrop at" << Simulator::Now().GetSeconds());
 }
-
-	static void 
+static void 
 RxData(Ptr <const Packet> pkt, const Address &a)
 {
-	//NS_LOG_UNCOND("Size: "<<pkt->GetSize());
 	if(pkt->GetSize () >= 1000)
 		data += pkt->GetSize (); 
 }
-	static void
+static void
 SetGroupTxMode(Ptr<RegularWifiMac> txRegMac, uint64_t period)
 {
 	NS_LOG_INFO("Get Group mode");
@@ -51,7 +48,7 @@ main (int argc, char *argv[])
 	uint32_t rxNodeNum = 1;
 	uint32_t seed = 1; // 1:1:100 
 	uint32_t type = 0; // 0 or 1 0-> per over 0.001 1-> maximun throughput 
-	uint64_t period = 100; // Microseconds
+	uint64_t period = 100; // MilliSeconds
 	double dopplerVelocity = 0.5; // 0.5:0.5:2
 	double bound = 10.0; //10.0:10.0:100.0
 	double perThreshold = 0.001;
@@ -91,7 +88,6 @@ main (int argc, char *argv[])
 	double dopplerFrq = dopplerVelocity*50/3; 
 	wifiChannel.AddPropagationLoss("ns3::JakesPropagationLossModel");
 	Config::SetDefault ("ns3::JakesProcess::DopplerFrequencyHz", DoubleValue (dopplerFrq));
-	//SetAttribute
 	Config::SetDefault ("ns3::SbraWifiManager::Type", UintegerValue (type));
 	Config::SetDefault ("ns3::SbraWifiManager::PerThreshold", DoubleValue (perThreshold));
 	
@@ -172,7 +168,7 @@ main (int argc, char *argv[])
 	rxDevice.Get(0)->GetObject<WifiNetDevice>()->GetPhy()->TraceConnectWithoutContext("PhyRxDrop", MakeCallback(&RxDrop));
 	rxDevice.Get(0)->GetObject<WifiNetDevice>()->GetPhy()->TraceConnectWithoutContext("PhyRxEnd", MakeCallback(&RxNum));
 
-	Simulator::Schedule (MicroSeconds (period), &SetGroupTxMode, txRegMac, period);
+	Simulator::Schedule (MilliSeconds (period), &SetGroupTxMode, txRegMac, period);
 	wifiPhy.EnablePcapAll ("multicast-test");
 	
 
@@ -188,11 +184,9 @@ main (int argc, char *argv[])
 	
   if(!fout.good())
   NS_LOG_UNCOND("File open failed");
-
 	fout << "multicastrateadapt_seed" << seed << "_type" << type << "_period" << period <<  "_doppler" << dopplerVelocity << "_bound" << bound << std::endl;
   fout << "Throughput " <<(double)data*8/1000/1000/endTime<<" Mb/s"<<std::endl;
   fout << "PER " <<(double)(rxdrop)/(double)(rxnum+rxdrop)<<std::endl;
- 
   fout.close();
 
 	NS_LOG_UNCOND("Throughput: "<< (double)data*8/1000/1000/endTime << " Mbps");

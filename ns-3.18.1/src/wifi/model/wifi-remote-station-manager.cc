@@ -551,6 +551,7 @@ WifiRemoteStationManager::GetDataTxVector (Mac48Address address, const WifiMacHe
       v.SetNess (0);
       v.SetStbc (false);
       return v;
+
     }
   if (!IsLowLatency ())
     {
@@ -1302,13 +1303,6 @@ WifiRemoteStationManager::GetNonUnicastMode (void)
 }
 
 // jychoi
-void
-WifiRemoteStationManager::GroupRateAdaptation (void)
-{
-	DoGroupRateAdaptation ();
-}
-
-// jychoi
 WifiMode
 WifiRemoteStationManager::DoGroupRateAdaptation (void)
 {
@@ -1320,6 +1314,13 @@ WifiRemoteStationManager::DoGroupRateAdaptation (void)
     {
       return m_nonUnicastMode;
     }
+}
+
+// jychoi
+void
+WifiRemoteStationManager::GroupRateAdaptation (void)
+{
+	DoGroupRateAdaptation ();
 }
 
 bool

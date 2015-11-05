@@ -250,7 +250,7 @@ SbraWifiManager::GroupRateAdaptation ()
 			}
 
 			// Throughput-SNR Rate Adaptation
-			else
+			else if (m_type == 1)
 			{
 				double maxPdrRate = 0.0;
 				double PdrRate = 0.0;
@@ -271,7 +271,7 @@ SbraWifiManager::GroupRateAdaptation ()
 				}
 				if (maxPdrRate == 0)
 					m_GroupTxMode = GetBasicMode (0);
-				//NS_LOG_UNCOND("SNR: "<<m_minSnr<<" GroupTxDataRate: "<<m_GroupTxMode.GetDataRate ()*0.000001<<" Mb/s");
+				NS_LOG_UNCOND("SNR: "<<m_minSnr<<" GroupTxDataRate: "<<m_GroupTxMode.GetDataRate ()*0.000001<<" Mb/s");
 			}
 		}
 		else
@@ -286,7 +286,7 @@ SbraWifiManager::DoGroupRateAdaptation ()
 {
 	if (m_initial == true)
 	{
-		//NS_LOG_UNCOND("Selected Rate Initial Rate: 6 Mb/s");
+		NS_LOG_UNCOND("Selected Rate Initial Rate: 6 Mb/s");
 		return GetBasicMode (0);
 	}
 	else
