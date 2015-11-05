@@ -6,16 +6,24 @@
 #include <vector>
 #include "wifi-mode.h"
 #include "wifi-remote-station-manager.h"
+#include "fb-headers.h"
 
 namespace ns3 {
 
-	class SbraWifiManager : public WifiRemoteStationManager
+typedef struct{
+	Mac48Address addr;
+ 	struct rxInfo info;	
+}StaInfo;
+
+class SbraWifiManager : public WifiRemoteStationManager
 {
 public:
   static TypeId GetTypeId (void);
   SbraWifiManager ();
   virtual ~SbraWifiManager ();
-
+	
+  void UpdateInfo(Mac48Address addr, struct rxInfo info);
+	
   virtual void SetupPhy (Ptr<WifiPhy> phy);
 	virtual void GroupRateAdaptation (void);
 
@@ -55,6 +63,8 @@ private:
 
 	typedef std::vector<Mac48Address> macAddress;
 	typedef std::vector<double> GroupRxSnr;
+
+	std::vector<StaInfo> m_infos;
 
 	WifiMode m_GroupTxMode;
 	macAddress m_macAddress;

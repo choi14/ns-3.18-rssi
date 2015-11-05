@@ -347,6 +347,39 @@ SbraWifiManager::DoGetRtsTxVector (WifiRemoteStation *st)
   return WifiTxVector (maxMode, GetDefaultTxPowerLevel (), GetShortRetryCount (station), GetShortGuardInterval (station), Min (GetNumberOfReceiveAntennas (station),GetNumberOfTransmitAntennas()), GetNumberOfTransmitAntennas (station), GetStbc (station));
 }
 
+void
+SbraWifiManager::UpdateInfo (Mac48Address addr, struct rxInfo info){
+	bool exist = false;
+
+	for (uint32_t i = 0; i < m_infos.size(); i++){
+		if (m_infos[i].addr == addr){
+			exist = true;
+			m_infos[i].info = info;
+			break;
+		}
+	}
+
+	if (exist == false){
+			StaInfo stainfo;
+			stainfo.addr = addr;
+			/*
+			m_infos[i].rxInfo.Rssi = info.Rssi;
+			m_infos[i].rxInfo.Snr = info.Snr;
+			m_infos[i].rxInfo.LossPacket = info.LossPacket;
+			m_infos[i].rxInfo.TotalPacket = info.TotalPacket;
+*/
+		m_infos.push_back(stainfo);
+	}
+	
+	
+	for (uint32_t i = 0; i < m_infos.size(); i++){
+		NS_LOG_ERROR("Addr " << m_infos[i].addr); 
+	}
+}
+
+
+
+
 bool
 SbraWifiManager::IsLowLatency (void) const
 {

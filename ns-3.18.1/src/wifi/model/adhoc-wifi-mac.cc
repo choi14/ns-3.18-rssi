@@ -182,13 +182,16 @@ AdhocWifiMac::Receive (Ptr<Packet> packet, const WifiMacHeader *hdr)
 		}
 		else if (to.IsGroup ())
 		{
-			if (m_initialize == false)
-			{
-  			NS_LOG_UNCOND ("-------------initialize----------------");
-  			m_srcAddress = hdr->GetAddr2 (); // jychoi source address
-				m_initialize = true; 
-				SendFeedback ();
-			}
+				if (m_initialize == false)
+				{
+						NS_LOG_UNCOND ("-------------initialize----------------");
+						m_srcAddress = hdr->GetAddr2 (); // jychoi source address
+						m_initialize = true; 
+						SendFeedback ();
+				}
+
+			ForwardUp (packet, from, to);
+			
 		}
 		else
 		{
