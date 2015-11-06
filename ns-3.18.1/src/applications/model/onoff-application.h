@@ -100,7 +100,7 @@ public:
    * limit.
    */
   void SetMaxBytes (uint32_t maxBytes);
-
+  uint32_t GetTotalTx (void);
   /**
    * \return pointer to associated socket
    */
@@ -154,6 +154,7 @@ private:
   EventId         m_sendEvent;    // Eventid of pending "send packet" event
   bool            m_sending;      // True if currently in sending state
   TypeId          m_tid;
+  uint8_t 	  m_ac;
   TracedCallback<Ptr<const Packet> > m_txTrace;
 
 private:

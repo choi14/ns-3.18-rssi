@@ -465,7 +465,8 @@ public:
    * This method is typically invoked by the lower PHY layer to notify
    * the MAC layer that a packet was successfully received.
    */
-  void ReceiveOk (Ptr<Packet> packet, double rxSnr, WifiMode txMode, WifiPreamble preamble);
+  void ReceiveOk (Ptr<Packet> packet, double rxSnr, double rssi,  WifiMode txMode, WifiPreamble preamble);
+  //void ReceiveOk (Ptr<Packet> packet, double rxSnr,  WifiMode txMode, WifiPreamble preamble);
   /**
    * \param packet packet received.
    * \param rxSnr snr of packet received.
@@ -473,7 +474,7 @@ public:
    * This method is typically invoked by the lower PHY layer to notify
    * the MAC layer that a packet was unsuccessfully received.
    */
-  void ReceiveError (Ptr<const Packet> packet, double rxSnr);
+  void ReceiveError (Ptr<const Packet> packet, double rxSnr, double rssi);
   /**
    * \param duration switching delay duration.
    *

@@ -631,7 +631,7 @@ MacLow::NeedCtsToSelf (WifiTxVector dataTxVector)
   return m_stationManager->NeedCtsToSelf (dataTxVector);
 }
 void
-MacLow::ReceiveError (Ptr<const Packet> packet, double rxSnr)
+MacLow::ReceiveError (Ptr<const Packet> packet, double rxSnr, double rssi)
 {
 	//jychoi
 	Ptr<Packet> copy_packet = Create<Packet> ();
@@ -675,9 +675,9 @@ MacLow::NotifySwitchingStartNow (Time duration)
 
 //jychoi
 void
-MacLow::ReceiveOk (Ptr<Packet> packet, double rxSnr, WifiMode txMode, WifiPreamble preamble)
+MacLow::ReceiveOk (Ptr<Packet> packet, double rxSnr, double rssi,  WifiMode txMode, WifiPreamble preamble)
 {
-  NS_LOG_FUNCTION (this << packet << rxSnr << txMode << preamble);
+  NS_LOG_FUNCTION (this << packet << rxSnr << rssi << txMode << preamble);
   /* A packet is received from the PHY.
    * When we have handled this packet,
    * we handle any packet present in the

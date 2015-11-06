@@ -365,26 +365,26 @@ WifiPhyStateHelper::SwitchToChannelSwitching (Time switchingDuration)
 }
 
 void
-WifiPhyStateHelper::SwitchFromRxEndOk (Ptr<Packet> packet, double snr, WifiMode mode, enum WifiPreamble preamble)
+WifiPhyStateHelper::SwitchFromRxEndOk (Ptr<Packet> packet, double snr, double rssi,  WifiMode mode, enum WifiPreamble preamble)
 {
   m_rxOkTrace (packet, snr, mode, preamble);
   NotifyRxEndOk ();
   DoSwitchFromRx ();
   if (!m_rxOkCallback.IsNull ())
     {
-      m_rxOkCallback (packet, snr, mode, preamble);
+      m_rxOkCallback (packet, snr, rssi,  mode, preamble);
     }
 
 }
 void
-WifiPhyStateHelper::SwitchFromRxEndError (Ptr<const Packet> packet, double snr)
+WifiPhyStateHelper::SwitchFromRxEndError (Ptr<const Packet> packet, double snr, double rssi)
 {
   m_rxErrorTrace (packet, snr);
   NotifyRxEndError ();
   DoSwitchFromRx ();
   if (!m_rxErrorCallback.IsNull ())
     {
-      m_rxErrorCallback (packet, snr);
+      m_rxErrorCallback (packet, snr, rssi);
     }
 }
 

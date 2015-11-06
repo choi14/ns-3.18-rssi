@@ -56,8 +56,8 @@ public:
   void SwitchToTx (Time txDuration, Ptr<const Packet> packet, WifiMode txMode, WifiPreamble preamble, uint8_t txPower);
   void SwitchToRx (Time rxDuration);
   void SwitchToChannelSwitching (Time switchingDuration);
-  void SwitchFromRxEndOk (Ptr<Packet> packet, double snr, WifiMode mode, enum WifiPreamble preamble);
-  void SwitchFromRxEndError (Ptr<const Packet> packet, double snr);
+  void SwitchFromRxEndOk (Ptr<Packet> packet, double snr, double rssi, WifiMode mode, enum WifiPreamble preamble);
+  void SwitchFromRxEndError (Ptr<const Packet> packet, double snr, double rssi);
   void SwitchMaybeToCcaBusy (Time duration);
 
   TracedCallback<Time,Time,enum WifiPhy::State> m_stateLogger;

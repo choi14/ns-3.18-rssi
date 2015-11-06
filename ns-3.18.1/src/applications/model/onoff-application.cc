@@ -41,6 +41,7 @@
 #include "ns3/udp-socket-factory.h"
 #include "ns3/string.h"
 #include "ns3/pointer.h"
+#include "ns3/qos-tag.h"
 
 NS_LOG_COMPONENT_DEFINE ("OnOffApplication");
 
@@ -81,6 +82,9 @@ OnOffApplication::GetTypeId (void)
                    UintegerValue (0),
                    MakeUintegerAccessor (&OnOffApplication::m_maxBytes),
                    MakeUintegerChecker<uint32_t> ())
+    .AddAttribute ("Tid", "Tid to use", UintegerValue(0),
+		    MakeUintegerAccessor (&OnOffApplication::m_ac),
+		    MakeUintegerChecker<uint8_t> ())
     .AddAttribute ("Protocol", "The type of protocol to use.",
                    TypeIdValue (UdpSocketFactory::GetTypeId ()),
                    MakeTypeIdAccessor (&OnOffApplication::m_tid),
@@ -241,6 +245,11 @@ void OnOffApplication::ScheduleNextTx ()
       StopApplication ();
     }
 }
+uint32_t OnOffApplication::GetTotalTx ()
+{
+	return m_totBytes;
+}
+
 
 void OnOffApplication::ScheduleStartEvent ()
 {  // Schedules the event to start sending data (switch to the "On" state)
@@ -267,6 +276,8 @@ void OnOffApplication::SendPacket ()
 
   NS_ASSERT (m_sendEvent.IsExpired ());
   Ptr<Packet> packet = Create<Packet> (m_pktSize);
+  QosTag tag(m_ac);
+  packet->AddPacketTag (tag);
   m_txTrace (packet);
   m_socket->Send (packet);
   m_totBytes += m_pktSize;
@@ -277,7 +288,7 @@ void OnOffApplication::SendPacket ()
                    <<  packet->GetSize () << " bytes to "
                    << InetSocketAddress::ConvertFrom(m_peer).GetIpv4 ()
                    << " port " << InetSocketAddress::ConvertFrom (m_peer).GetPort ()
-                   << " total Tx " << m_totBytes << " bytes");
+                   << " total Tx " << m_totBytes << " bytes" << " tid " << (uint16_t)m_ac);
     }
   else if (Inet6SocketAddress::IsMatchingType (m_peer))
     {

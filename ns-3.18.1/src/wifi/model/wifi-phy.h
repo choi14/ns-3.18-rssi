@@ -147,15 +147,18 @@ public:
   /**
    * arg1: packet received successfully
    * arg2: snr of packet
-   * arg3: mode of packet
-   * arg4: type of preamble used for packet.
+   * arg3: rssi of packet
+   * arg4: mode of packet
+   * arg5: type of preamble used for packet.
    */
-  typedef Callback<void,Ptr<Packet>, double, WifiMode, enum WifiPreamble> RxOkCallback;
+  typedef Callback<void,Ptr<Packet>, double, double, WifiMode, enum WifiPreamble> RxOkCallback;
+  //typedef Callback<void,Ptr<Packet>, double, WifiMode, enum WifiPreamble> RxOkCallback;
   /**
    * arg1: packet received unsuccessfully
    * arg2: snr of packet
+   * arg3: rssi of packet
    */
-  typedef Callback<void,Ptr<const Packet>, double> RxErrorCallback;
+  typedef Callback<void,Ptr<const Packet>, double, double> RxErrorCallback;
 
   static TypeId GetTypeId (void);
 
